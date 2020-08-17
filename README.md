@@ -1,1 +1,1 @@
-# data-visualization-intership
+# data-visualization-internship
