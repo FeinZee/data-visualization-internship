@@ -30,6 +30,7 @@
   export default {
     name: 'LineChart',
     data: function() {
+      let self = this;
       return {
         PVUV: "PV",
         lineData: [],
@@ -37,9 +38,10 @@
         uvData: [],
         tooltipAttrs: {
           title: function(data) {
-            return data[0].date
+            // data是某一列的数据点
+            return data[0].hintDate + '\t' + self.PVUV + "值";
           },
-          formatter: data => `${data.date} ${data.sales}`
+          formatter: data => `${data.platform} ${data.number}`
         },
         dataFields: {
           row: 'platform',

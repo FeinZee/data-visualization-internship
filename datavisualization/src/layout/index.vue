@@ -84,13 +84,32 @@ export default {
 
         var pv = [];
         var uv = [];
-        for (var record of data) {
-          pv.push({"date": record["date"],"platform": "百度统计","number": record["baidupv"]});
-          pv.push({"date": record["date"],"platform": "谷歌统计","number": record["googlepv"]});
-          pv.push({"date": record["date"],"platform": "友盟统计","number": record["umengpv"]});
-          uv.push({"date": record["date"],"platform": "百度统计","number": record["baiduuv"]});
-          uv.push({"date": record["date"],"platform": "谷歌统计","number": record["googleuv"]});
-          uv.push({"date": record["date"],"platform": "友盟统计","number": record["umenguv"]});
+        var interval = Math.floor((data.length -1)/ 15);
+        console.log("interval = " + interval);
+        var curIndex = interval;
+        for (var record of data.reverse()) {
+          var date = record["date"];
+          var showDate = date;
+          if (data.length >= 30){
+            date = date.substring(5,date.length); //不显示年份
+            showDate = date;
+          }else{
+            if (curIndex == interval) {
+              curIndex = 0;
+            }else{
+              var index = date.lastIndexOf("-");
+              showDate = date.substring(index+1,date.length);
+              curIndex++;
+            }
+          }
+          
+          
+          pv.push({"date": showDate,"platform": "百度统计","number": record["baidupv"], "hintDate": date});
+          pv.push({"date": showDate,"platform": "谷歌统计","number": record["googlepv"], "hintDate": date});
+          pv.push({"date": showDate,"platform": "友盟统计","number": record["umengpv"], "hintDate": date});
+          uv.push({"date": showDate,"platform": "百度统计","number": record["baiduuv"], "hintDate": date});
+          uv.push({"date": showDate,"platform": "谷歌统计","number": record["googleuv"], "hintDate": date});
+          uv.push({"date": showDate,"platform": "友盟统计","number": record["umenguv"], "hintDate": date});
         }
         this.$refs.lineChart.pvData = pv;
         this.$refs.lineChart.uvData = uv;
