@@ -3,27 +3,17 @@
     <div id="content">
       <div id="floating-bar">
         <p class="inline">时间：</p>
-        <c-date-picker v-model="value" @change="change" set-cell-disabled type="daterange" />
+        <c-date-picker v-model="timeValue" @change="change"  type="daterange" />
       </div>
       <div id="data-region">
         <div id="chart-region">
           <div class="tag" id="tag1"><p>多日趋势对比图</p></div>
           
-          <line-chart id="line-chart"></line-chart>
-          <div id="chechbox">
-            <c-radio-group v-model="isPv">
-              <c-radio-button value="true">
-                PV
-              </c-radio-button>
-              <c-radio-button value="false">
-                UV
-              </c-radio-button>
-            </c-radio-group>
-          </div>
+          <line-chart ref="lineChart" id="line-chart"></line-chart>
         </div>
         <div id="table-region">
           <div class="tag" id="tag2"><p>多日数据汇总表</p></div>
-          <data-table ref="table" id="table"></data-table>
+          <data-table v-loading="loading" ref="table" id="table"></data-table>
         </div>
       </div>
     </div>
@@ -52,10 +42,10 @@ export default {
   data() {
     return {
       collapsed: true,
-      value: [],
-      isPv:"true",
+      timeValue: [],
       startDate: "",
-      endDate: ""
+      endDate: "",
+      loading: false
     }
   },
   components: {
@@ -65,9 +55,11 @@ export default {
   methods: {
     change(date) {
       // 用户进行清空操作时，value长度为0
-      if (date.target.value.length == 2){
-        this.startDate = date.target.value[0];
-        this.endDate = date.target.value[1];
+      console.log(date);
+      if (this.timeValue.length == 2){
+        this.startDate = this.timeValue[0];
+        this.endDate = this.timeValue[1];
+        this.changeData(1);
         this.$axios.get('http://localhost:8080/visualization/getPvuv?endDate='+this.endDate+"&startDate="+this.startDate).then(res => {
           if (res.data) {
             this.changeData(0,res.data);
@@ -79,13 +71,31 @@ export default {
         })
       }
     },
-    changeData(state,data,msg=""){
-      console.log(msg);
-
-      if (state != 0){
+    changeData(state,data,msg){
+      if (state == 1){
+        this.loading = true;
+      }
+      else if(state == 2){
         alert(msg);
-      }else{
+      }
+      else{
+        this.loading = false;
         this.$refs.table.dataSource = data;
+
+        var pv = [];
+        var uv = [];
+        for (var record of data) {
+          pv.push({"date": record["date"],"platform": "百度统计","number": record["baidupv"]});
+          pv.push({"date": record["date"],"platform": "谷歌统计","number": record["googlepv"]});
+          pv.push({"date": record["date"],"platform": "友盟统计","number": record["umengpv"]});
+          uv.push({"date": record["date"],"platform": "百度统计","number": record["baiduuv"]});
+          uv.push({"date": record["date"],"platform": "谷歌统计","number": record["googleuv"]});
+          uv.push({"date": record["date"],"platform": "友盟统计","number": record["umenguv"]});
+        }
+        this.$refs.lineChart.pvData = pv;
+        this.$refs.lineChart.uvData = uv;
+        this.$refs.lineChart.dataChanged();
+        
       }
 
     }
@@ -172,12 +182,5 @@ export default {
     width:80%;
     margin: 0 auto;
   }
-  #chechbox {
-    position: absolute;
-    right: 60px;
-    margin:10px;
-    z-index:1;
-  }
-
  
 </style>
