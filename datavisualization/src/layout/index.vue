@@ -3,11 +3,12 @@
     <div id="content">
       <div id="floating-bar">
         <p class="inline">时间：</p>
-        <c-date-picker v-model="value" @change="change" type="daterange" />
+        <c-date-picker v-model="value" @change="change" set-cell-disabled type="daterange" />
       </div>
       <div id="data-region">
         <div id="chart-region">
           <div class="tag" id="tag1"><p>多日趋势对比图</p></div>
+          
           <line-chart id="line-chart"></line-chart>
           <div id="chechbox">
             <c-radio-group v-model="isPv">
@@ -22,6 +23,7 @@
         </div>
         <div id="table-region">
           <div class="tag" id="tag2"><p>多日数据汇总表</p></div>
+          <data-table ref="table" id="table"></data-table>
         </div>
       </div>
     </div>
@@ -44,24 +46,51 @@
 
 <script>
 import LineChart from "../components/LineChart.vue"
-  export default {
-    name: "Layout",
-    data() {
-      return {
-        collapsed: true,
-        value: [],
-        isPv:"true"
+import Table from "../components/Table.vue"
+export default {
+  name: "Layout",
+  data() {
+    return {
+      collapsed: true,
+      value: [],
+      isPv:"true",
+      startDate: "",
+      endDate: ""
+    }
+  },
+  components: {
+    'line-chart': LineChart,
+    'data-table': Table
+  },
+  methods: {
+    change(date) {
+      // 用户进行清空操作时，value长度为0
+      if (date.target.value.length == 2){
+        this.startDate = date.target.value[0];
+        this.endDate = date.target.value[1];
+        this.$axios.get('http://localhost:8080/visualization/getPvuv?endDate='+this.endDate+"&startDate="+this.startDate).then(res => {
+          if (res.data) {
+            this.changeData(0,res.data);
+            
+          }
+          else {
+            this.changeData(2,[],"没有获取到数据");
+          }
+        })
       }
     },
-    components: {
-      'line-chart': LineChart
-    },
-    methods: {
-      change(date) {
-        console.log('date change: ', date)
+    changeData(state,data,msg=""){
+      console.log(msg);
+
+      if (state != 0){
+        alert(msg);
+      }else{
+        this.$refs.table.dataSource = data;
       }
+
     }
   }
+}
 </script>
 
 <style scoped>
@@ -104,11 +133,11 @@ import LineChart from "../components/LineChart.vue"
     background: white;
     margin-top: 80px;
     margin-left: 70px;
-    height: 1000px;
+    height: 1200px;
   }
   #chart-region {
     width: 95%;
-    height:50%;
+    height:40%;
     padding:10px;
   }
   #table-region {
@@ -116,6 +145,7 @@ import LineChart from "../components/LineChart.vue"
     height:50%;
     padding:10px;
     margin-top: 20px;
+    justify-content: center;
   }
   .tag {
     height:50px;
@@ -136,6 +166,11 @@ import LineChart from "../components/LineChart.vue"
   }
   #line-chart {
     top:30px;
+  }
+  #table {
+    top:80px;
+    width:80%;
+    margin: 0 auto;
   }
   #chechbox {
     position: absolute;
