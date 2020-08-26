@@ -3,17 +3,18 @@
     <div id="content">
       <div id="floating-bar">
         <p class="inline">时间：</p>
-        <c-date-picker v-model="timeValue" @change="change"  type="daterange" />
+        <c-date-picker v-model="timeValue" @change="change" :start-placeholder="timeValue[0]" :end-placeholder="timeValue[1]" type="daterange" />
       </div>
       <div id="data-region">
         <div id="chart-region">
           <div class="tag" id="tag1"><p>多日趋势对比图</p></div>
-          
-          <line-chart ref="lineChart" id="line-chart"></line-chart>
+          <line-chart v-if="!error" v-loading:[loadingArgs]="loading" ref="lineChart" id="line-chart"></line-chart>
+          <div v-else class="error-msg"><img class="vertical-middle"  src="../assets/warning.png"/><p class="vertical-middle inline">数据加载异常</p></div>
         </div>
         <div id="table-region">
           <div class="tag" id="tag2"><p>多日数据汇总表</p></div>
-          <data-table v-loading="loading" ref="table" id="table"></data-table>
+          <data-table v-if="!error" v-loading:[loadingArgs]="loading" ref="table" id="table"></data-table>
+          <div v-else class="error-msg"><img class="vertical-middle"  src="../assets/warning.png"/><p class="vertical-middle inline">数据加载异常</p></div>
         </div>
       </div>
     </div>
@@ -45,7 +46,11 @@ export default {
       timeValue: [],
       startDate: "",
       endDate: "",
-      loading: false
+      loading: false,
+      error: false,
+      loadingArgs: {
+          text: '数据正在加载中，请稍后'
+        }
     }
   },
   components: {
@@ -53,33 +58,39 @@ export default {
     'data-table': Table
   },
   methods: {
-    change(date) {
+    change() {
       // 用户进行清空操作时，value长度为0
-      console.log(date);
       if (this.timeValue.length == 2){
-        this.startDate = this.timeValue[0];
-        this.endDate = this.timeValue[1];
-        this.changeData(1);
-        this.$axios.get('http://localhost:8080/visualization/getPvuv?endDate='+this.endDate+"&startDate="+this.startDate).then(res => {
-          if (res.data) {
-            this.changeData(0,res.data);
-            
-          }
-          else {
-            this.changeData(2,[],"没有获取到数据");
-          }
-        })
+        this.getData(this.timeValue[0],this.timeValue[1]);
       }
+    },
+    getData(start,end){
+      this.changeData(1);//告知视图:数据开始加载
+      this.$axios.get('http://localhost:8080/visualization/getPvuv?endDate='+end+"&startDate="+start).then(res => {
+        if (res.data) {
+          this.changeData(0,res.data);
+          
+        }
+        else {
+          this.changeData(2,[],"没有获取到数据");
+        }
+      })
     },
     changeData(state,data,msg){
       if (state == 1){
+        //加载状态
         this.loading = true;
+        this.error = false;
       }
       else if(state == 2){
+        //异常
+        this.loading = false;
+        this.error = true;
         alert(msg);
       }
       else{
         this.loading = false;
+        this.error = false;
         this.$refs.table.dataSource = data;
 
         var pv = [];
@@ -118,7 +129,17 @@ export default {
       }
 
     }
-  }
+  },
+  mounted: function(){
+    var date = new Date();
+    date.setTime(date.getTime()-24*3600*1000);
+    var endDate = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
+    date.setTime(date.getTime()-24*3600*1000*7);
+    var startDate = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
+    this.getData(startDate,endDate);
+    this.timeValue[0] = startDate;
+    this.timeValue[1] = endDate;
+  },
 }
 </script>
 
@@ -157,6 +178,7 @@ export default {
   }
   .inline {
     display: inline;
+    padding-left: 10px;
   }
   #data-region {
     background: white;
@@ -200,6 +222,14 @@ export default {
     top:80px;
     width:80%;
     margin: 0 auto;
+  }
+  .error-msg {
+    position: relative;
+    top:50%;
+    left:43%;
+  }
+  .vertical-middle {
+    vertical-align: middle;
   }
  
 </style>
