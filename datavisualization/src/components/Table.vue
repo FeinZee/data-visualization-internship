@@ -41,12 +41,12 @@ export default {
             if (this.dataSource.length == 0){
                 return [];
             }
-            var totalData = {};
+            let totalData = {};
             totalData.date = "总计";
-            var avgDate = {};
+            let avgDate = {};
             avgDate.date = "日均";
-            var baidupv = 0,baiduuv = 0,googlepv = 0,googleuv = 0,umengpv = 0,umenguv = 0;
-            for (var record of this.dataSource){
+            let baidupv = 0,baiduuv = 0,googlepv = 0,googleuv = 0,umengpv = 0,umenguv = 0;
+            for (let record of this.dataSource){
                 baidupv += record.baidupv;
                 baiduuv += record.baiduuv;
                 googlepv += record.googlepv;
@@ -54,7 +54,7 @@ export default {
                 umengpv += record.umengpv;
                 umenguv += record.umenguv;
             }
-            var length = this.dataSource.length;
+            const length = this.dataSource.length;
             totalData.baidupv = baidupv;
             totalData.baiduuv = baiduuv;
             totalData.googlepv = googlepv;

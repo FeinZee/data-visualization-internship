@@ -93,15 +93,15 @@ export default {
         this.error = false;
         this.$refs.table.dataSource = data;
 
-        var pv = [];
-        var uv = [];
-        var interval = Math.floor((data.length -1)/ 15);
+        let pv = [];
+        let uv = [];
+        const interval = Math.floor((data.length -1)/ 15);
         console.log("interval = " + interval);
-        var curIndex = interval;
-        for (var record of data.reverse()) {
-          var date = record["date"];
-          var hintDate = date;
-          var showDate = date;
+        let curIndex = interval;
+        for (let record of data.reverse()) {
+          let date = record["date"];
+          const hintDate = date;
+          let showDate = date;
           if (data.length >= 30){
             date = date.substring(5,date.length); //不显示年份
             showDate = date;
@@ -109,7 +109,7 @@ export default {
             if (curIndex == interval) {
               curIndex = 0;
             }else{
-              var index = date.lastIndexOf("-");
+              const index = date.lastIndexOf("-");
               showDate = date.substring(index+1,date.length);
               curIndex++;
             }
@@ -132,11 +132,11 @@ export default {
     }
   },
   mounted: function(){
-    var date = new Date();
+    let date = new Date();
     date.setTime(date.getTime()-24*3600*1000);
-    var endDate = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
-    date.setTime(date.getTime()-24*3600*1000*7);
-    var startDate = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
+    const endDate = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
+    date.setTime(date.getTime()-24*3600*1000*6);
+    const startDate = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
     this.getData(startDate,endDate);
     this.timeValue[0] = startDate;
     this.timeValue[1] = endDate;

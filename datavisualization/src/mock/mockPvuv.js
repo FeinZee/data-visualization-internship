@@ -1,42 +1,42 @@
 import Mock from 'mockjs'
+import randomPositiveInt from '../util/util.js'
 
 function getParameters(url){
-    var index = url.lastIndexOf("?");
-    var remain = url.substring(index+1,url.length);
-    var arr = remain.split('&');
-    var params = {};
-    for (var i = 0; i < arr.length; i++) {
-        var pair = arr[i].split('=');
+    const index = url.lastIndexOf("?");
+    const remain = url.substring(index+1,url.length);
+    const arr = remain.split('&');
+    let params = {};
+    arr.forEach(function(value){
+        const pair = value.split('=');
         params[pair[0]] = pair[1];
-        
-    }
+    })
     return params;
 }
 
-Mock.mock(RegExp('http://localhost:8080/visualization/getPvuv'+'.*'), 'get', (options) => {
-    var params = getParameters(options.url);
+
+Mock.mock(RegExp('http://localhost:8360/visualization/getPvuv'+'.*'), 'get', (options) => {
+    const params = getParameters(options.url);
     let endBase = +new Date(params["endDate"]);
-    let startBase = new Date(params["startDate"]);
+    const startBase = new Date(params["startDate"]);
     if (!endBase || !startBase) {
         alert("请求参数出错");
     }
-    var data = [];
-    for (let i = 0;;i++){
-        var obj = {};
-        var ans = new Date((endBase));
-        endBase -= 1000 * 3600 * 24;
-        
-        if (ans.getTime() < startBase) {
-            break;
-        }
+    let data = [];
+    let ans = new Date(endBase);
+    while(ans.getTime() >= startBase) {
+        let obj = {};
         obj.date = [ans.getFullYear(), ans.getMonth() + 1, ans.getDate()].join("-");
-        obj.baidupv = Math.floor(Math.random()*65536);
-        obj.baiduuv = Math.floor(Math.random()*65536);
-        obj.googlepv = Math.floor(Math.random()*65536);
-        obj.googleuv = Math.floor(Math.random()*65536);
-        obj.umengpv = Math.floor(Math.random()*65536);
-        obj.umenguv = Math.floor(Math.random()*65536);
+        obj.baidupv = randomPositiveInt(65536);
+        obj.baiduuv = randomPositiveInt(65536);
+        obj.googlepv = randomPositiveInt(65536);
+        obj.googleuv = randomPositiveInt(65536);
+        obj.umengpv = randomPositiveInt(65536);
+        obj.umenguv = randomPositiveInt(65536);
         data.push(obj);
+
+        endBase -= 1000 * 3600 * 24;
+        ans = new Date((endBase));
+        
     }
    
     return data;
