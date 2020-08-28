@@ -1,0 +1,15 @@
+{
+  "apps": [{
+    "name": "backend",
+    "script": "production.js",
+    "cwd": "C:\Users\FeinZee\Downloads\Software learning\self-learning\thinkjs\backend",
+    "exec_mode": "fork",
+    "max_memory_restart": "1G",
+    "autorestart": true,
+    "node_args": [],
+    "args": [],
+    "env": {
+      
+    }
+  }]
+}

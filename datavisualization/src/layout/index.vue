@@ -100,6 +100,7 @@ export default {
         var curIndex = interval;
         for (var record of data.reverse()) {
           var date = record["date"];
+          var hintDate = date;
           var showDate = date;
           if (data.length >= 30){
             date = date.substring(5,date.length); //不显示年份
@@ -115,12 +116,12 @@ export default {
           }
           
           
-          pv.push({"date": showDate,"platform": "百度统计","number": record["baidupv"], "hintDate": date});
-          pv.push({"date": showDate,"platform": "谷歌统计","number": record["googlepv"], "hintDate": date});
-          pv.push({"date": showDate,"platform": "友盟统计","number": record["umengpv"], "hintDate": date});
-          uv.push({"date": showDate,"platform": "百度统计","number": record["baiduuv"], "hintDate": date});
-          uv.push({"date": showDate,"platform": "谷歌统计","number": record["googleuv"], "hintDate": date});
-          uv.push({"date": showDate,"platform": "友盟统计","number": record["umenguv"], "hintDate": date});
+          pv.push({"date": showDate,"platform": "百度统计","number": record["baidupv"], "hintDate": hintDate});
+          pv.push({"date": showDate,"platform": "谷歌统计","number": record["googlepv"], "hintDate": hintDate});
+          pv.push({"date": showDate,"platform": "友盟统计","number": record["umengpv"], "hintDate": hintDate});
+          uv.push({"date": showDate,"platform": "百度统计","number": record["baiduuv"], "hintDate": hintDate});
+          uv.push({"date": showDate,"platform": "谷歌统计","number": record["googleuv"], "hintDate": hintDate});
+          uv.push({"date": showDate,"platform": "友盟统计","number": record["umenguv"], "hintDate": hintDate});
         }
         this.$refs.lineChart.pvData = pv;
         this.$refs.lineChart.uvData = uv;
