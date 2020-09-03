@@ -3,7 +3,8 @@
     <div id="content">
       <div id="floating-bar">
         <p class="inline">时间：</p>
-        <c-date-picker v-model="timeValue" @change="change" :start-placeholder="timeValue[0]" :end-placeholder="timeValue[1]" type="daterange" />
+        <c-date-picker v-model="timeValue" @change="change" :start-placeholder="timeValue[0]" 
+        :end-placeholder="timeValue[1]" type="daterange" :setCellDisabled="setCellDisabledDate"/>
       </div>
       <div id="data-region">
         <div id="chart-region">
@@ -64,17 +65,28 @@ export default {
         this.getData(this.timeValue[0],this.timeValue[1]);
       }
     },
+    setCellDisabledDate(value){
+      return value < new Date("2020-07-19") || value > new Date("2020-08-27");
+    },
+    openNotification(placement,myTitle,msg,myType) {
+      this.$notification({
+        title: myTitle,
+        type: myType,
+        description: msg,
+        placement
+      })
+    },
     getData(start,end){
       this.changeData(1);//告知视图:数据开始加载
-      this.$axios.get('http://localhost:8080/visualization/getPvuv?endDate='+end+"&startDate="+start).then(res => {
-        if (res.data) {
-          console.log("res.data.data");
-          console.log(res);
-          this.changeData(0,res.data);
+      this.$axios.get('http://localhost:8360/visualization/getPvuv?endDate='+end+"&startDate="+start).then(res => {
+        console.log(res);
+        if (res.data.errno == 0) {
           
+          this.changeData(0,res.data.data);
         }
         else {
-          this.changeData(2,[],"没有获取到数据");
+          //有异常
+          this.changeData(2,[],res.data.errmsg);
         }
       })
     },
@@ -88,7 +100,7 @@ export default {
         //异常
         this.loading = false;
         this.error = true;
-        alert(msg);
+        this.openNotification('top-left','错误',msg+'。请尝试重新选择起始时间或刷新页面！','danger');
       }
       else{
         this.loading = false;
@@ -98,7 +110,6 @@ export default {
         let pv = [];
         let uv = [];
         const interval = Math.floor((data.length -1)/ 15);
-        console.log("interval = " + interval);
         let curIndex = interval;
         for (let record of data.reverse()) {
           let date = record["date"];
@@ -211,6 +222,7 @@ export default {
     margin:10px;
     border-radius: 8px;
     text-align: center;
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
   }
   #tag1 {
     position:absolute;
