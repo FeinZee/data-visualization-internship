@@ -41,33 +41,25 @@ export default {
             if (this.dataSource.length == 0){
                 return [];
             }
-            let totalData = {};
-            totalData.date = "总计";
-            let avgDate = {};
-            avgDate.date = "日均";
+
             let baidupv = 0,baiduuv = 0,googlepv = 0,googleuv = 0,umengpv = 0,umenguv = 0;
-            for (let record of this.dataSource){
-                baidupv += record.baidupv;
-                baiduuv += record.baiduuv;
-                googlepv += record.googlepv;
-                googleuv += record.googleuv;
-                umengpv += record.umengpv;
-                umenguv += record.umenguv;
-            }
+            const propertyArr = ["baidupv","baiduuv","googlepv","googleuv","umengpv","umenguv"];
+            let dataArr = function (arr, propertyArr){
+                let ans = [];
+                for (let p of propertyArr) {
+                    ans.push(arr.reduce( (acc, val) => acc + val[p],0));
+                }
+                return ans;
+            }(this.dataSource,propertyArr);
+            [baidupv,baiduuv,googlepv,googleuv,umengpv,umenguv] = dataArr;
+            const totalData = {"date":"总计", baidupv, baiduuv, googlepv, googleuv, umengpv, umenguv };
+
             const length = this.dataSource.length;
-            totalData.baidupv = baidupv;
-            totalData.baiduuv = baiduuv;
-            totalData.googlepv = googlepv;
-            totalData.googleuv = googleuv;
-            totalData.umengpv = umengpv;
-            totalData.umenguv = umenguv;
-            avgDate.baidupv = parseInt(baidupv / length);
-            avgDate.baiduuv = parseInt(baiduuv / length);
-            avgDate.googlepv = parseInt(googlepv / length);
-            avgDate.googleuv = parseInt(googleuv / length);
-            avgDate.umengpv = parseInt(umengpv / length);
-            avgDate.umenguv = parseInt(umenguv / length);
-            return this.dataSource.concat(totalData).concat(avgDate);
+            dataArr.forEach((val,index) => dataArr[index] = parseInt(val / length));
+            [baidupv,baiduuv,googlepv,googleuv,umengpv,umenguv] = dataArr;
+            const avgData = {"date":"日均", baidupv, baiduuv, googlepv, googleuv, umengpv, umenguv };
+
+            return this.dataSource.concat(totalData).concat(avgData);
         }
     },
     watch: {

@@ -7,8 +7,8 @@ function getParameters(url){
     const arr = remain.split('&');
     let params = {};
     arr.forEach(function(value){
-        const pair = value.split('=');
-        params[pair[0]] = pair[1];
+        const [key, val] = value.split('=');
+        params[key] = val;
     })
     return params;
 }

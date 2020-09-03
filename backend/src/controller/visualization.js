@@ -20,7 +20,7 @@ module.exports = class extends Base {
       this.fail(errCode,errMsg);
     }else{
       let data = [];
-      data = await this.model('pvuv').where('to_days(date) <= to_days(\''+endDate+'\') AND to_days(date) >= to_days(\''+startDate+'\')').order('date DESC').select();
+      data = await this.model('pvuv').where(`to_days(date) <= to_days('${endDate}') AND to_days(date) >= to_days('${startDate}')`).order('date DESC').select();
       const resultData = data.map(function(value) {
         let record ={};
         record.date = value.date;
