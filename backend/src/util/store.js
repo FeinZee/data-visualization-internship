@@ -2,10 +2,21 @@ var fs = require("fs");
 var request = require("sync-request");
 
 const umengfile = "./src/util/umeng.csv";
+
+// 百度api
 const access_token = ""; // 百度统计个人access_token
 const site_id = 0; //查询的站点代码
 const startDate = "20200720";
 const endDate = "20200827";
+
+// 谷歌api
+const {google} = require('googleapis');
+const key = require('../config/key.json');
+const VIEW_ID = "ga:xxxxxxxx";
+process.env.HTTPS_PROXY = 'http://proxyhost:port';
+google.options({ proxy: 'http://proxyhost:port' });
+const startDateG = "2020-07-20";
+const endDateG = "2020-08-27";
 
 
 function getBaiduPvuvFromAPI() {
@@ -20,10 +31,31 @@ function getBaiduPvuvFromAPI() {
 
 }
 
-function getGooglePvuvFromAPI() {
-    let data = [];
+async function getGooglePvuvFromAPI() {
+    const jwtClient = new google.auth.JWT(
+        key.client_email,
+        null,
+        key.private_key,
+        [
+          "https://www.googleapis.com/auth/analytics",
+          "https://www.googleapis.com/auth/analytics.readonly",
+        ],
+        null
+    );
+
+    let options = {
+        auth: jwtClient,
+        ids: VIEW_ID,
+        metrics: "ga:pageviews,ga:uniquePageviews",
+        dimensions: "ga:date",
+        "start-date": startDateG, //查询时间区间
+        "end-date": endDateG
+      };
     
-    return data;
+    const res = await google.analytics("v3").data.ga.get(options);
+    const result = formatData((res.data.rows),2);
+    return result;
+
 }
 
 function getUmengPvuvFromFile() {

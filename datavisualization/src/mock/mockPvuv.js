@@ -14,7 +14,7 @@ function getParameters(url){
 }
 
 
-Mock.mock(RegExp('http://localhost:8360/visualization/getPvuv'+'.*'), 'get', (options) => {
+Mock.mock(RegExp('http://localhost:8080/visualization/getPvuv'+'.*'), 'get', (options) => {
     const params = getParameters(options.url);
     let endBase = +new Date(params["endDate"]);
     const startBase = new Date(params["startDate"]);

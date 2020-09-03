@@ -63,7 +63,7 @@ exports.model = {
 | 2        | 将谷歌统计的数据存储到数据库中 |
 | 3        | 将友盟统计的数据存储到数据库中 |
 
-具体实现 
+百度 api 
 
 ```js
 // src/controller/visualization.js  中的 storePvuvAction 调用 /src/util/store.js 中的方法
@@ -85,6 +85,19 @@ function getBaiduPvuvFromAPI() {
 }
 ```
 
+谷歌 api
+
+```js
+// backend/src/util/store.js
+const key = require('../config/key.json'); //凭据密钥
+const VIEW_ID = "ga:xxxxxxxx"; //数据视图
+// 需要开代理访问的话要修改下面两句，否则的话注释掉即可
+process.env.HTTPS_PROXY = 'http://proxyhost:port';
+google.options({ proxy: 'http://proxyhost:port' });
+```
+
+
+
 ### 前端后端连接
 
 ```js
@@ -92,7 +105,7 @@ function getBaiduPvuvFromAPI() {
 
 module.exports = class extends think.Controller {
   __before() {
-    this.header("Access-Control-Allow-Origin", "http://127.0.0.1:8080");  
+    this.header("Access-Control-Allow-Origin", "http://localhost:8080");  
     // 目前默认前端访问8080端口，要根据需求修改此处
   }
 };

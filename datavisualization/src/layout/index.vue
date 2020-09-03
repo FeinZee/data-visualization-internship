@@ -66,9 +66,9 @@ export default {
     },
     getData(start,end){
       this.changeData(1);//告知视图:数据开始加载
-      this.$axios.get('http://localhost:8080/visualization/getPvuv?endDate='+end+"&startDate="+start).then(res => {
+      this.$axios.get('http://localhost:8360/visualization/getPvuv?endDate='+end+"&startDate="+start).then(res => {
         if (res.data) {
-          this.changeData(0,res.data);
+          this.changeData(0,res.data.data);
           
         }
         else {
@@ -132,11 +132,13 @@ export default {
     }
   },
   mounted: function(){
-    let date = new Date();
-    date.setTime(date.getTime()-24*3600*1000);
-    const endDate = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
-    date.setTime(date.getTime()-24*3600*1000*6);
-    const startDate = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
+    // let date = new Date();
+    // date.setTime(date.getTime()-24*3600*1000);
+    // const endDate = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
+    // date.setTime(date.getTime()-24*3600*1000*6);
+    // const startDate = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
+    const endDate = "2020-08-22";
+    const startDate = "2020-08-15";
     this.getData(startDate,endDate);
     this.timeValue[0] = startDate;
     this.timeValue[1] = endDate;
