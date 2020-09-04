@@ -78,6 +78,7 @@ export default {
     },
     getData(start,end){
       this.changeData(1);//告知视图:数据开始加载
+     
       this.$axios.get('http://localhost:8360/visualization/getPvuv?endDate='+end+"&startDate="+start).then(res => {
         console.log(res);
         if (res.data.errno == 0) {
@@ -88,7 +89,11 @@ export default {
           //有异常
           this.changeData(2,[],res.data.errmsg);
         }
+      }).catch(info => {
+        this.changeData(2,[],info);
       })
+     
+      
     },
     changeData(state,data,msg){
       if (state == 1){
@@ -206,13 +211,16 @@ export default {
     width: 95%;
     height:40%;
     padding:10px;
+    display: flex;
+    flex-direction: column;
   }
   #table-region {
     width: 95%;
     height:50%;
     padding:10px;
     margin-top: 20px;
-    justify-content: center;
+    display: flex;
+    flex-direction: column;
   }
   .tag {
     height:50px;
@@ -225,24 +233,22 @@ export default {
     box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
   }
   #tag1 {
-    position:absolute;
-    right:30px;
+    align-self: flex-end;
   }
   #tag2 {
-    position:absolute;
-    left:90px;
   }
   #line-chart {
     top:30px;
+    height:100%;
   }
   #table {
-    top:80px;
+    top:30px;
     width:80%;
     margin: 0 auto;
   }
   .error-msg {
     position: relative;
-    top:50%;
+    top:30%;
     left:43%;
   }
   .vertical-middle {

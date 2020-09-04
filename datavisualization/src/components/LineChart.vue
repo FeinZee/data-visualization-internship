@@ -1,29 +1,32 @@
 <template>
-  <s-chart :data="lineData" :data-fields="dataFields">
-    <s-line
-      :data="lineData"
-      :data-fields="dataFields"
-      :css-point="pointStyle"
-    />
-    <s-axis :attrs="{orient:'left'}" :css-axis="false" :css-scale="false" />
-    <s-axis :attrs="{orient:'bottom'}" />
-    <s-legend
-      :attrs="{align: ['center', 'bottom']}"
-      :css-icon="{borderRadius:10}"
-      :css-text="{fontSize:12}"
-    />
-    <s-tooltip :attrs="tooltipAttrs" />
+  <div>
+    <s-chart id="c-chart" :data="lineData" :data-fields="dataFields">
+      <s-line
+        :data="lineData"
+        :data-fields="dataFields"
+        :css-point="pointStyle"
+      />
+      <s-axis :attrs="{orient:'left'}" :css-axis="false" :css-scale="false" />
+      <s-axis :attrs="{orient:'bottom'}" />
+      <s-legend
+        :attrs="{align: ['center', 'bottom']}"
+        :css-icon="{borderRadius:10}"
+        :css-text="{fontSize:12}"
+      />
+      <s-tooltip :attrs="tooltipAttrs" />
+    </s-chart>
     <div id="chechbox">
-      <c-radio-group v-model="PVUV" size="small">
-        <c-radio-button value="PV">
-          PV
-        </c-radio-button>
-        <c-radio-button value="UV">
-          UV
-        </c-radio-button>
-      </c-radio-group>
-    </div>
-  </s-chart>
+        <c-radio-group v-model="PVUV" size="small">
+          <c-radio-button value="PV">
+            PV
+          </c-radio-button>
+          <c-radio-button value="UV">
+            UV
+          </c-radio-button>
+        </c-radio-group>
+      </div>
+  </div>
+  
 </template>
 
 <script>
@@ -70,10 +73,9 @@
 
 <style scoped>
 #chechbox {
-    position: absolute;
-    right: 60px;
-    bottom: -20px;
-    margin:10px;
-    z-index:2;
-  }
+  text-align: end;
+  z-index:2;
+}
+#c-chart {
+}
 </style>

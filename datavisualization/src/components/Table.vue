@@ -8,7 +8,7 @@ export default {
     name: 'Table',
     data(){
         return{
-            height: 250,
+            height: 300,
             dataSource:[],
             columns:[
                 { title:"日期",prop:"date" },
