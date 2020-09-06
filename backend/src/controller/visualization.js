@@ -20,18 +20,11 @@ module.exports = class extends Base {
       this.fail(errCode,errMsg);
     }else{
       try{
-        let data = [];
-        data = await this.model('pvuv').where(`to_days(date) <= to_days('${endDate}') AND to_days(date) >= to_days('${startDate}')`).order('date DESC').select();
+        let data = await this.model('pvuv').where(`to_days(date) <= to_days('${endDate}') AND to_days(date) >= to_days('${startDate}')`).order('date DESC').select();
         const resultData = data.map(function(value) {
-          let record ={};
-          record.date = value.date;
-          record.baidupv = value.baidu_pv;
-          record.baiduuv = value.baidu_uv;
-          record.googlepv = value.google_pv;
-          record.googleuv = value.google_uv;
-          record.umengpv = value.umeng_pv;
-          record.umenguv = value.umeng_uv;
-          return record;
+          const {date: date, baidu_pv: baidupv, baidu_uv: baiduuv, google_pv: googlepv,
+            google_uv: googleuv, umeng_pv: umengpv, umeng_uv: umenguv} = value;
+          return {date,baidupv,baiduuv,googlepv,googleuv,umengpv,umenguv};
         })
         this.success(resultData);
       }catch(e){

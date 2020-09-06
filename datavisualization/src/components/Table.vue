@@ -43,19 +43,16 @@ export default {
             }
 
             let baidupv = 0,baiduuv = 0,googlepv = 0,googleuv = 0,umengpv = 0,umenguv = 0;
+            //数据求和
             const propertyArr = ["baidupv","baiduuv","googlepv","googleuv","umengpv","umenguv"];
-            let dataArr = function (arr, propertyArr){
-                let ans = [];
-                for (let p of propertyArr) {
-                    ans.push(arr.reduce( (acc, val) => acc + val[p],0));
-                }
-                return ans;
-            }(this.dataSource,propertyArr);
+            let dataArr = propertyArr.map((property)=> {
+                return this.dataSource.reduce( (acc,val) => acc + val[property], 0);
+            });
             [baidupv,baiduuv,googlepv,googleuv,umengpv,umenguv] = dataArr;
             const totalData = {"date":"总计", baidupv, baiduuv, googlepv, googleuv, umengpv, umenguv };
-
+            
             const length = this.dataSource.length;
-            dataArr.forEach((val,index) => dataArr[index] = parseInt(val / length));
+            dataArr = dataArr.map((val) => {return parseInt(val / length)});
             [baidupv,baiduuv,googlepv,googleuv,umengpv,umenguv] = dataArr;
             const avgData = {"date":"日均", baidupv, baiduuv, googlepv, googleuv, umengpv, umenguv };
 
