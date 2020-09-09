@@ -13,10 +13,6 @@ jobs:
         uses: actions/checkout@master
       - name: Install and Build
         run: |
-          cd backend
-          npm install
-          npm start
-          cd ..
           cd datavisualization
           npm install
           npm run build
