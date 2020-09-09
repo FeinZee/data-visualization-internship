@@ -6,13 +6,17 @@ on:
       - master
 
 jobs:
-  build-and-deploy-frontend:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@master
       - name: Install and Build
         run: |
+          cd backend
+          npm install
+          npm start
+          cd ..
           cd datavisualization
           npm install
           npm run build
