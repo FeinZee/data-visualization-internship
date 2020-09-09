@@ -41,8 +41,8 @@ exports.model = {
     encoding: 'utf8',
     host: '127.0.0.1',
     port: '3306',
-    user: 'root', //mysql user
-    password: 'mysqlroot', //mysql password
+    user: '', //mysql user
+    password: '', //mysql password
     dateStrings: true
   }
 };
