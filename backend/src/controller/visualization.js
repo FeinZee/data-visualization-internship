@@ -35,35 +35,30 @@ module.exports = class extends Base {
     
   }
 
-  storePvuvAction() {
-    let platform = this.get('platform');
-    if (!platform) {
-      this.body = "缺少平台信息";
-    }
+  async storePvuvAction() {
+    // 只能由定时任务调用，否则会拒绝
+    if (!this.isCli) return this.fail(1000,'deny');
+    
     try {
-      if (platform == 1) {
-        //百度统计
-        const baiduData = store.getBaiduPvuvFromAPI();
-        this.model('pvuv').addDataArray(baiduData,platform);
-        this.body = baiduData;
-        
-      }
-      else if (platform == 2) {
-        //谷歌统计
-        const googleData = store.getGooglePvuvFromAPI();
-        this.body = googleData;
-      }
-      else if (platform == 3) {
-        //友盟统计
-        const umengData = store.getUmengPvuvFromFile();
-        this.body = umengData;
-        this.model('pvuv').addDataArray(umengData,platform);
-      }else{
-        this.body = "平台信息错误";
-      }
-    }catch(e){
-      this.body = e;
-      this.fail(e);
-    }
+      //昨天
+      let yesterday = new Date();
+      yesterday.setTime(yesterday.getTime()-24*3600*1000);
+      let dayBeforeYes = new Date();
+      dayBeforeYes.setTime(dayBeforeYes.getTime() - 2*24*3600*1000);
+      //baidu统计如果起始日期一致，将返回24小时的数据，所以此处从前天开始
+      let platform = 1;
+      const baiduData = store.getBaiduPvuvFromAPI(dayBeforeYes,yesterday);
+      this.model('pvuv').addDataArray(baiduData,platform);
+      
+      
+      //google
+      platform = 2;
+      const googleData = await store.getGooglePvuvFromAPI(yesterday,yesterday);
+      this.model('pvuv').addDataArray(googleData,platform);
+      
+    }catch (e) {
+     console.log(e);
+    }  
   }
+  
 };

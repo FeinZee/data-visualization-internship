@@ -6,8 +6,7 @@ const umengfile = "./src/util/umeng.csv";
 // 百度api
 const access_token = ""; // 百度统计个人access_token
 const site_id = 0; //查询的站点代码
-const startDate = "20200720";
-const endDate = "20200827";
+
 
 // 谷歌api
 const {google} = require('googleapis');
@@ -15,11 +14,12 @@ const key = require('../config/key.json');
 const VIEW_ID = "ga:xxxxxxxx";
 process.env.HTTPS_PROXY = 'http://proxyhost:port';
 google.options({ proxy: 'http://proxyhost:port' });
-const startDateG = "2020-07-20";
-const endDateG = "2020-08-27";
 
 
-function getBaiduPvuvFromAPI() {
+
+function getBaiduPvuvFromAPI(startTime, endTime) {
+    const startDate = startTime.format("yyyyMMdd");
+    const endDate = endTime.format("yyyyMMdd");
     let data = [];
     let uri = "https://openapi.baidu.com/rest/2.0/tongji/report/getData?access_token="+access_token
     +"&site_id="+site_id+"&method=overview/getTimeTrendRpt&start_date="+startDate+"&end_date=" + 
@@ -31,7 +31,9 @@ function getBaiduPvuvFromAPI() {
 
 }
 
-async function getGooglePvuvFromAPI() {
+async function getGooglePvuvFromAPI(startTime, endTime) {
+    const startDate = startTime.format("yyyy-MM-dd");
+    const endDate = endTime.format("yyyy-MM-dd");
     const jwtClient = new google.auth.JWT(
         key.client_email,
         null,
@@ -48,8 +50,8 @@ async function getGooglePvuvFromAPI() {
         ids: VIEW_ID,
         metrics: "ga:pageviews,ga:uniquePageviews",
         dimensions: "ga:date",
-        "start-date": startDateG, //查询时间区间
-        "end-date": endDateG
+        "start-date": startDate, //查询时间区间
+        "end-date": endDate
       };
     
     const res = await google.analytics("v3").data.ga.get(options);
@@ -92,6 +94,15 @@ function formatData(data, platform) {
             value.push(pv == '--' ? 0 : pv, uv == '--' ? 0 : uv);
         })
     }
+    else if (platform == 2) {
+        //谷歌
+        //输入格式：[[date,pv,uv],[]...[]]
+        result = data.map(function(value){
+            value[1] = parseInt(value[1]);
+            value[2] = parseInt(value[2]);
+            return value;
+        })
+    }
     else if (platform == 3) {
         //友盟
         //输入格式：[[date,pv,uv],[]...[]]
@@ -103,6 +114,22 @@ function formatData(data, platform) {
         
     }
     return result;
+}
+
+Date.prototype.format = function (fmt) {
+    var o = {
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "h+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
 }
 
 

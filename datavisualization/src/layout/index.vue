@@ -79,10 +79,9 @@ export default {
     getData(start,end){
       this.changeData(1);//告知视图:数据开始加载
      
-      this.$axios.get('api/getPvuv?endDate='+end+"&startDate="+start).then(res => {
+      this.$axios.get('api/visualization/getPvuv?endDate='+end+"&startDate="+start).then(res => {
         console.log(res);
         if (res.data.errno == 0) {
-          
           this.changeData(0,res.data.data);
         }
         else {

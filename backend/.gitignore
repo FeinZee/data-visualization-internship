@@ -38,3 +38,6 @@ adapter.development.js
 
 # data
 /src/util/umeng.csv
+/src/config/key.json
+/src/config/adpter.js
+

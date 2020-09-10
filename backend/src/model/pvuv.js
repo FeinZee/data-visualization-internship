@@ -19,24 +19,14 @@ module.exports = class extends think.Model {
 
             if(think.isEmpty(data)) {
                 // 内容为空时的处理
-                console.log("为空");
                 let obj = {};
                 obj.date = item[0];
                 Object.assign(obj,pvuv);
                 this.add(obj);
                 
             }else{
-                console.log("不空");
                 this.where({date: item[0]}).update(pvuv);
             }
         }   
-    }
-
-    whereEarlier(endDate){
-        return this.where('to_days(date) <= to_days('+endDate+')').select();
-    }
-    
-    whereLater(startDate){
-        return this.where('to_days(date) >= to_days('+startDate+')').select();
     }
 };
