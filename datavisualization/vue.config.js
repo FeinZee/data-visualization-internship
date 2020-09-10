@@ -1,7 +1,7 @@
 module.exports = {
     outputDir: 'out',
     publicPath: process.env.NODE_ENV === 'production'
-      ? '/data-visualization-intership/'
+      ? '/data-visualization-internship/'
       : '/',
     devServer: {
       proxy: {
