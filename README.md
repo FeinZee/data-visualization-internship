@@ -49,19 +49,9 @@ exports.model = {
 
 ##### 获取数据
 
-接口
+用thinkjs的crontab 每天获取昨日的百度&谷歌数据，写在`visualization/getPvuvAction`中
 
-```
-/visualization/storePvuv?platform=1
-```
-
-请求参数
-
-| platform | 含义                           |
-| -------- | ------------------------------ |
-| 1        | 将百度统计的数据存储到数据库中 |
-| 2        | 将谷歌统计的数据存储到数据库中 |
-| 3        | 将友盟统计的数据存储到数据库中 |
+https://thinkjs.org/zh-cn/doc/3.0/crontab.html
 
 百度 api 
 
@@ -100,6 +90,8 @@ google.options({ proxy: 'http://proxyhost:port' });
 
 ### 前端后端连接
 
+方法一  CORS
+
 ```js
 // backend/src/controller/base.js
 
@@ -112,5 +104,17 @@ module.exports = class extends think.Controller {
 
 ```
 
+方法二 vue-cli的devServer
 
+```js
+//datavisualization/vue.config.js
+devServer: {
+      proxy: {
+        '/visualization': {
+          target: "http://localhost:8360",
+          changeOrigin: true
+        }
+      }
+    }
+```
 
