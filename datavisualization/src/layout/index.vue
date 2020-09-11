@@ -1,37 +1,28 @@
 <template>
   <div id="layout">
-    <div id="content">
-      <div id="floating-bar">
-        <p class="inline">时间：</p>
-        <c-date-picker v-model="timeValue" @change="change" :start-placeholder="timeValue[0]" 
-        :end-placeholder="timeValue[1]" type="daterange" :setCellDisabled="setCellDisabledDate"/>
-      </div>
-      <div id="data-region">
-        <div id="chart-region">
-          <div class="tag" id="tag1"><p>多日趋势对比图</p></div>
-          <line-chart v-if="!error" v-loading:[loadingArgs]="loading" ref="lineChart" id="line-chart"></line-chart>
-          <div v-else class="error-msg"><img class="vertical-middle"  src="../assets/warning.png"/><p class="vertical-middle inline">数据加载异常</p></div>
-        </div>
-        <div id="table-region">
-          <div class="tag" id="tag2"><p>多日数据汇总表</p></div>
-          <data-table v-if="!error" v-loading:[loadingArgs]="loading" ref="table" id="table"></data-table>
-          <div v-else class="error-msg"><img class="vertical-middle"  src="../assets/warning.png"/><p class="vertical-middle inline">数据加载异常</p></div>
-        </div>
-      </div>
+    <div id="floating-bar">
+      <p class="inline">时间：</p>
+      <c-date-picker v-model="timeValue" @change="change" :start-placeholder="timeValue[0]" 
+      :end-placeholder="timeValue[1]" type="daterange" :setCellDisabled="setCellDisabledDate"/>
     </div>
-    <div id="menu-container">
-      <c-menu id="menu" mode="vertical" theme="dark" :collapsed="collapsed" active-name="1">
-        <c-menu-item name="1">
-          <c-icon-data-trend />
-          PVUV
-        </c-menu-item>
-        
-        <c-menu-item name="2" disabled>
-          <c-icon-more />
-          其他
-        </c-menu-item>
-      </c-menu>
-    </div>
+    <section id="chart-region">
+      <h4 class="tag" id="tag1"><p>多日趋势对比图</p></h4>
+      <line-chart v-loading:[loadingArgs]="loading" ref="lineChart" id="line-chart"></line-chart>
+    </section>
+    <section id="table-region">
+      <h4 class="tag" id="tag2"><p>多日数据汇总表</p></h4>
+      <data-table v-loading:[loadingArgs]="loading" ref="table" id="table"></data-table>
+    </section>
+    <c-menu id="menu" mode="vertical" theme="dark" :collapsed="collapsed" active-name="1">
+      <c-menu-item name="1">
+        <c-icon-data-trend />
+        PVUV
+      </c-menu-item>     
+      <c-menu-item name="2" disabled>
+        <c-icon-more />
+        其他
+      </c-menu-item>
+    </c-menu>
   </div>
 </template>
 
@@ -48,7 +39,6 @@ export default {
       startDate: "",
       endDate: "",
       loading: false,
-      error: false,
       loadingArgs: {
           text: '数据正在加载中，请稍后'
         }
@@ -99,12 +89,10 @@ export default {
       if (state == 1){
         //加载状态
         this.loading = true;
-        this.error = false;
       }
       else if(state == 2){
         //异常
         this.loading = false;
-        this.error = false;
         this.$refs.table.dataSource = [];
         this.$refs.lineChart.pvData = [];
         this.$refs.lineChart.uvData = [];
@@ -113,7 +101,6 @@ export default {
       }
       else{
         this.loading = false;
-        this.error = false;
         this.$refs.table.dataSource = data;
         if (data.length == 0) {
           this.openNotification('top-left','提示','暂无数据,请尝试重新选择起始时间！','info');
@@ -173,21 +160,18 @@ export default {
 <style scoped>
   #layout {
     display: flex;
+    flex: auto;
+    flex-direction: column;
     width: 100%;
-  }
-  #menu-container {
-    position: fixed;
-    top:0%;
-
-  }
-  #menu {
-    height:100vh;
-
-  }
-  #content {
-    flex:auto;
     background: #fafafa;
   }
+  
+  #menu {
+    height:100vh;
+    position: fixed;
+    top:0%;
+  }
+
   #floating-bar {
     background: white;
     line-height: 60px;
@@ -207,24 +191,23 @@ export default {
     display: inline;
     padding-left: 10px;
   }
-  #data-region {
-    background: white;
-    margin-top: 80px;
-    margin-left: 70px;
-    height: 1200px;
-  }
+  
   #chart-region {
     width: 95%;
-    height:40%;
-    padding:10px;
+    background: white;
+    margin-top: 80px;
+    margin-left: 100px;
+    height:480px;
+    padding-bottom: 40px;
     display: flex;
     flex-direction: column;
   }
   #table-region {
     width: 95%;
-    height:50%;
-    padding:10px;
-    margin-top: 20px;
+    height:600px;
+    background: white;
+    margin-left: 100px;
+    padding:30px;
     display: flex;
     flex-direction: column;
   }

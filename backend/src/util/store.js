@@ -12,9 +12,7 @@ const site_id = 0; //查询的站点代码
 const {google} = require('googleapis');
 const key = require('../config/key.json');
 const VIEW_ID = "ga:xxxxxxxx";
-process.env.HTTPS_PROXY = 'http://proxyhost:port';
-google.options({ proxy: 'http://proxyhost:port' });
-
+process.env.HTTP_PROXY = 'http://proxyhost:port';  // proxy non-SSL requests
 
 
 function getBaiduPvuvFromAPI(startTime, endTime) {
@@ -32,8 +30,11 @@ function getBaiduPvuvFromAPI(startTime, endTime) {
 }
 
 async function getGooglePvuvFromAPI(startTime, endTime) {
-    const startDate = startTime.format("yyyy-MM-dd");
-    const endDate = endTime.format("yyyy-MM-dd");
+    // const startDate = startTime.format("yyyy-MM-dd");
+    // const endDate = endTime.format("yyyy-MM-dd");
+    const startDate = "2020-07-19";
+    const endDate = "2020-09-10";
+
     const jwtClient = new google.auth.JWT(
         key.client_email,
         null,
@@ -48,13 +49,14 @@ async function getGooglePvuvFromAPI(startTime, endTime) {
     let options = {
         auth: jwtClient,
         ids: VIEW_ID,
-        metrics: "ga:pageviews,ga:uniquePageviews",
+        metrics: "ga:pageviews,ga:newUsers",
         dimensions: "ga:date",
         "start-date": startDate, //查询时间区间
         "end-date": endDate
       };
     
     const res = await google.analytics("v3").data.ga.get(options);
+    console.log(res.data.rows)
     const result = formatData((res.data.rows),2);
     return result;
 

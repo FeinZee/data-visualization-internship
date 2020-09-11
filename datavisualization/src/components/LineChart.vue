@@ -15,16 +15,14 @@
       />
       <s-tooltip :attrs="tooltipAttrs" />
     </s-chart>
-    <div id="chechbox">
-        <c-radio-group v-model="PVUV" size="small">
-          <c-radio-button value="PV">
-            PV
-          </c-radio-button>
-          <c-radio-button value="UV">
-            UV
-          </c-radio-button>
-        </c-radio-group>
-      </div>
+    <c-radio-group id="checkbox" v-model="PVUV">
+      <c-radio-button value="PV">
+        PV
+      </c-radio-button>
+      <c-radio-button value="UV">
+        UV
+      </c-radio-button>
+    </c-radio-group>
   </div>
   
 </template>
@@ -72,7 +70,9 @@
 </script>
 
 <style scoped>
-#chechbox {
+#checkbox {
+  display: block;
+  margin-right: 10px;
   text-align: end;
   z-index:2;
 }
