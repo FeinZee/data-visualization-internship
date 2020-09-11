@@ -61,8 +61,11 @@ export default {
     },
     watch: {
         dataSource(){
-            if (this.dataSource.length <= 4){
-                this.height = 48 * (4 + this.dataSource.length);
+            if (this.dataSource.length == 0) {
+                this.height = 250;
+            }
+            else if (this.dataSource.length <= 4){
+                this.height = 49 * (4 + this.dataSource.length);
             }else{
                 this.height = 480;
             }

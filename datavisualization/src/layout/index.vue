@@ -66,20 +66,21 @@ export default {
       }
     },
     setCellDisabledDate(value){
-      return value < new Date("2020-07-19") || value > new Date("2020-08-27");
+      return value < new Date("2020-07-19") || value >= new Date()-24*3600*1000;
     },
     openNotification(placement,myTitle,msg,myType) {
       this.$notification({
         title: myTitle,
         type: myType,
         description: msg,
-        placement
+        placement,
+        duration: 10*1000
       })
     },
     getData(start,end){
       this.changeData(1);//告知视图:数据开始加载
      
-      this.$axios.get('api/visualization/getPvuv?endDate='+end+"&startDate="+start).then(res => {
+      this.$axios.get('visualization/getPvuv?endDate='+end+"&startDate="+start).then(res => {
         console.log(res);
         if (res.data.errno == 0) {
           this.changeData(0,res.data.data);
@@ -94,7 +95,7 @@ export default {
      
       
     },
-    changeData(state,data,msg){
+    changeData(state,data){
       if (state == 1){
         //加载状态
         this.loading = true;
@@ -103,14 +104,20 @@ export default {
       else if(state == 2){
         //异常
         this.loading = false;
-        this.error = true;
-        this.openNotification('top-left','错误',msg+'。请尝试重新选择起始时间或刷新页面！','danger');
+        this.error = false;
+        this.$refs.table.dataSource = [];
+        this.$refs.lineChart.pvData = [];
+        this.$refs.lineChart.uvData = [];
+        this.$refs.lineChart.dataChanged();
+        this.openNotification('top-left','提示','暂无数据,请尝试重新选择起始时间或刷新页面！','info');
       }
       else{
         this.loading = false;
         this.error = false;
         this.$refs.table.dataSource = data;
-
+        if (data.length == 0) {
+          this.openNotification('top-left','提示','暂无数据,请尝试重新选择起始时间！','info');
+        }
         let pv = [];
         let uv = [];
         const interval = Math.floor((data.length -1)/ 15);
