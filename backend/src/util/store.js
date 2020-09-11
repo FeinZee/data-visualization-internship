@@ -30,10 +30,9 @@ function getBaiduPvuvFromAPI(startTime, endTime) {
 }
 
 async function getGooglePvuvFromAPI(startTime, endTime) {
-    // const startDate = startTime.format("yyyy-MM-dd");
-    // const endDate = endTime.format("yyyy-MM-dd");
-    const startDate = "2020-07-19";
-    const endDate = "2020-09-10";
+    const startDate = startTime.format("yyyy-MM-dd");
+    const endDate = endTime.format("yyyy-MM-dd");
+   
 
     const jwtClient = new google.auth.JWT(
         key.client_email,
@@ -56,7 +55,6 @@ async function getGooglePvuvFromAPI(startTime, endTime) {
       };
     
     const res = await google.analytics("v3").data.ga.get(options);
-    console.log(res.data.rows)
     const result = formatData((res.data.rows),2);
     return result;
 
