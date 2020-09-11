@@ -82,8 +82,7 @@ function getBaiduPvuvFromAPI() {
 const key = require('../config/key.json'); //凭据密钥
 const VIEW_ID = "ga:xxxxxxxx"; //数据视图
 // 需要开代理访问的话要修改下面两句，否则的话注释掉即可
-process.env.HTTPS_PROXY = 'http://proxyhost:port';
-google.options({ proxy: 'http://proxyhost:port' });
+process.env.HTTP_PROXY = 'http://proxyhost:port';
 ```
 
 
@@ -120,6 +119,4 @@ devServer: {
 
 ### 在线demo
 
-https://feinzee.github.io/data-visualization-internship/#/pvuv
-
-### 
+https://feinzee.github.io/data-visualization-internship/

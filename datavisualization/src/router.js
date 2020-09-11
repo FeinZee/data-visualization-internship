@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 
 // 引入组件
 import Layout from "./layout"
+import pvuv from "./components/pvuv/index"
+// import { component } from "vue/types/umd";
 
 // 要告诉 vue 使用 vueRouter
 Vue.use(VueRouter);
@@ -11,7 +13,14 @@ const routes = [
     {
         path:'/',
         component: Layout,
-        redirect:'/pvuv'
+        redirect:'/pvuv',
+        children: [
+            {
+                path: '/pvuv',
+                component: pvuv
+            }
+            
+        ]
     },
     {
         path:"/pvuv",

@@ -32,6 +32,7 @@ function getBaiduPvuvFromAPI(startTime, endTime) {
 async function getGooglePvuvFromAPI(startTime, endTime) {
     const startDate = startTime.format("yyyy-MM-dd");
     const endDate = endTime.format("yyyy-MM-dd");
+    
    
 
     const jwtClient = new google.auth.JWT(
@@ -48,7 +49,7 @@ async function getGooglePvuvFromAPI(startTime, endTime) {
     let options = {
         auth: jwtClient,
         ids: VIEW_ID,
-        metrics: "ga:pageviews,ga:newUsers",
+        metrics: "ga:pageviews,ga:uniquePageviews",
         dimensions: "ga:date",
         "start-date": startDate, //查询时间区间
         "end-date": endDate
