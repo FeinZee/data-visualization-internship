@@ -193,20 +193,18 @@ export default {
   }
   
   #chart-region {
-    width: 95%;
     background: white;
-    margin-top: 80px;
-    margin-left: 100px;
+    border-top: 80px solid #fafafa;
+    border-left: 70px solid #fafafa;
     height:480px;
-    padding-bottom: 40px;
+    padding: 30px 30px 40px 30px;
     display: flex;
     flex-direction: column;
   }
   #table-region {
-    width: 95%;
     height:600px;
     background: white;
-    margin-left: 100px;
+    border-left: 70px solid #fafafa;
     padding:30px;
     display: flex;
     flex-direction: column;
